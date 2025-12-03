@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Blackjack - Cassino (corrigido)</title>
+<style>
+  body{font-family:'Trebuchet MS',sans-serif;background:radial-gradient(circle at center,#033,#000);text-align:center;color:gold;padding:20px}
+  h1{font-size:48px;text-shadow:0 0 18px gold;margin-bottom:6px}
+  .table{background:#0b8a35;border:6px solid gold;border-radius:18px;padding:18px;box-shadow:0 0 30px rgba(255,215,0,0.45);max-width:680px;margin:auto}
+  h2{color:#fff;text-shadow:0 0 8px black;margin:6px 0}
+  .cards{display:flex;justify-content:center;margin:10px 0;min-height:120px}
+  .card{width:80px;height:110px;background:#fff;border-radius:10px;margin:6px;display:flex;justify-content:center;align-items:center;font-size:28px;font-weight:700;border:2px solid #222;box-shadow:0 6px 14px rgba(0,0,0,0.6);transform:rotate(-2deg);animation:pop .25s ease-out}
+  @keyframes pop{from{transform:scale(.6) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(-2deg);opacity:1}}
+  .card.hidden{background:#222;color:#222;border:2px dashed #555}
+  button{padding:12px 24px;margin:10px;font-size:18px;border:none;border-radius:10px;cursor:pointer;transition:.12s;font-weight:700}
+  #hit{background:#007bff;color:#fff;box-shadow:0 0 10px #007bff}
+  #stand{background:#ff4500;color:#fff;box-shadow:0 0 10px #ff4500}
+  #new{background:#32cd32;color:#fff;box-shadow:0 0 10px #32cd32}
+  button:hover{transform:scale(1.06);filter:brightness(1.08)}
+  #result{margin-top:10px;font-size:30px;font-weight:800;text-shadow:0 0 10px black;min-height:40px}
+  .info{color:#fff;margin:4px 0}
+</style>
+</head>
+<body>
+
+<h1>BLACKJACK</h1>
+
+<div class="table">
+  <h2>Dealer</h2>
+  <div id="dealer-cards" class="cards"></div>
+  <p id="dealer-score" class="info"></p>
+
+  <h2>Você</h2>
+  <div id="player-cards" class="cards"></div>
+  <p id="player-score" class="info"></p>
+
+  <div>
+    <button id="hit">Pedir Carta</button>
+    <button id="stand">Parar</button>
+    <button id="new">Novo Jogo</button>
+  </div>
+
+  <h2 id="result"></h2>
+</div>
+
+<!-- SONS -->
+<audio id="snd-card" src="card.mp3"></audio>
+<audio id="snd-win" src="win.mp3"></audio>
+<audio id="snd-lose" src="lose.mp3"></audio>
+<audio id="snd-blackjack" src="blackjack.mp3"></audio>
+<audio id="snd-click" src="click.mp3"></audio>
+
+<script>
+/* -------- CONFIG & UTIL -------- */
+const values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const suits  = ['♠','♥','♦','♣'];
+
+let deck = [];
+let playerHand = [];
+let dealerHand = [];
+let revealDealer = false; // quando true, mostramos todas as cartas do dealer
+
+const sndCard = document.getElementById('snd-card');
+const sndWin = document.getElementById('snd-win');
+const sndLose = document.getElementById('snd-lose');
+const sndBlackjack = document.getElementById('snd-blackjack');
+const sndClick = document.getElementById('snd-click');
+
+function play(s){ if(!s) return; try{ s.currentTime = 0; s.play(); } catch(e){} }
+
+/* Embaralhamento Fisher-Yates */
+function createDeck(){
+  deck = [];
+  for(let v of values){
+    for(let s of suits) deck.push({value: v, suit: s});
+  }
+  // Fisher-Yates shuffle
+  for(let i = deck.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+/* Valor robusto de carta */
+function getCardValue(card){
+  if(!card || card.value === undefined) return 0;
+  const v = card.value;
+  if(v === 'A') return 11;
+  if(v === 'J' || v === 'Q' || v === 'K') return 10;
+  const n = parseInt(v, 10);
+  return isNaN(n) ? 0 : n;
+}
+
+/* Calcula pontuação com ajuste de ases */
+function calculateScore(hand){
+  let score = 0;
+  let aces = 0;
+  for(const c of hand){
+    const val = getCardValue(c);
+    score += val;
+    if(c && c.value === 'A') aces++;
+  }
+  // convert some A's from 11 -> 1 while necessary
+  while(score > 21 && aces > 0){
+    score -= 10;
+    aces--;
+  }
+  return score;
+}
+
+/* -------- UI -------- */
+function createCardElement(card, hidden = false){
+  const d = document.createElement('div');
+  d.className = 'card' + (hidden ? ' hidden' : '');
+  d.innerText = hidden ? '' : (card.value + card.suit);
+  if(!hidden && (card.suit === '♥' || card.suit === '♦')) d.style.color = 'red';
+  return d;
+}
+
+function displayHand(hand, elementId, hideSecondCard = false){
+  const container = document.getElementById(elementId);
+  container.innerHTML = '';
+  hand.forEach((card, idx) => {
+    const hide = hideSecondCard && idx === 1;
+    container.appendChild(createCardElement(card, hide));
+  });
+}
+
+function updateScores(){
+  // Player sempre mostra pontuação real
+  document.getElementById('player-score').innerText = 'Pontuação: ' + calculateScore(playerHand);
+
+  // Dealer: se revelar (fim do jogo) mostra total; senão mostra só a primeira carta visível
+  if(revealDealer){
+    document.getElementById('dealer-score').innerText = 'Pontuação: ' + calculateScore(dealerHand);
+  } else {
+    // mostramos apenas o valor da primeira carta (estimativa), comum em cassinos mostra "??" ou valor parcial
+    const visible = dealerHand[0] ? calculateScore([dealerHand[0]]) : 0;
+    document.getElementById('dealer-score').innerText = 'Pontuação: ' + visible + ' + ?';
+  }
+}
+
+/* -------- LÓGICA DO JOGO -------- */
+function startGame(){
+  createDeck();
+  playerHand = [deck.pop(), deck.pop()];
+  dealerHand = [deck.pop(), deck.pop()];
+  revealDealer = false;
+  document.getElementById('result').innerText = '';
+
+  displayHand(playerHand, 'player-cards', false);
+  displayHand(dealerHand, 'dealer-cards', true); // esconde 2ª carta do dealer
+  updateScores();
+
+  // se já começar com 21 -> blackjack automático
+  if(calculateScore(playerHand) === 21){
+    revealDealer = true;
+    displayHand(dealerHand, 'dealer-cards', false);
+    updateScores();
+    play(sndBlackjack);
+    document.getElementById('result').innerText = 'BLACKJACK! 🎉';
+  }
+}
+
+function revealAndResolve(finalReason = ''){
+  revealDealer = true;
+  displayHand(dealerHand, 'dealer-cards', false);
+  updateScores();
+  // dealer joga até >=17
+  let dealer = calculateScore(dealerHand);
+  while(dealer < 17){
+    dealerHand.push(deck.pop());
+    displayHand(dealerHand, 'dealer-cards', false);
+    updateScores();
+    dealer = calculateScore(dealerHand);
+    play(sndCard);
+  }
+
+  const player = calculateScore(playerHand);
+  dealer = calculateScore(dealerHand);
+
+  let result = '';
+  if(player > 21){ result = 'Você estourou! 💥'; play(sndLose); }
+  else if(player === 21 && finalReason === 'player21'){ result = 'BLACKJACK! 🎉'; play(sndBlackjack); }
+  else if(dealer > 21){ result = 'Dealer estourou — Você venceu! 🎉'; play(sndWin); }
+  else if(player > dealer){ result = 'Você venceu! 🎉'; play(sndWin); }
+  else if(player < dealer){ result = 'Você perdeu! 😢'; play(sndLose); }
+  else { result = 'Empate! 😐'; }
+
+  document.getElementById('result').innerText = result;
+}
+
+/* Ação Pedir Carta */
+document.getElementById('hit').onclick = () => {
+  play(sndClick);
+  if(revealDealer) return; // jogo já acabou
+  playerHand.push(deck.pop());
+  displayHand(playerHand, 'player-cards', false);
+  play(sndCard);
+  updateScores();
+
+  const score = calculateScore(playerHand);
+  if(score === 21){
+    // termina imediatamente (revela dealer e resolve)
+    revealAndResolve('player21');
+  } else if(score > 21){
+    // jogador estourou -> revela e resolve (dealer pode não precisar jogar, mas revelamos)
+    revealDealer = true;
+    displayHand(dealerHand, 'dealer-cards', false);
+    updateScores();
+    play(sndLose);
+    document.getElementById('result').innerText = 'Você estourou! 💥';
+  }
+};
+
+/* Ação Parar */
+document.getElementById('stand').onclick = () => {
+  play(sndClick);
+  if(revealDealer) return;
+  revealAndResolve();
+};
+
+/* Novo jogo */
+document.getElementById('new').onclick = () => {
+  play(sndClick);
+  startGame();
+};
+
+/* start */
+startGame();
+</script>
+</body>
+</html>

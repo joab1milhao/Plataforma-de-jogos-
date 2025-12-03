@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TikTok Bônus — Simulação Educacional</title>
+  <style>
+    body{margin:0;background:#f5f5f7;font-family:Inter,Arial,sans-serif;color:#222}
+    .topbar{background:#fff;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.12);font-size:14px}
+    .title{text-align:center;font-weight:600;font-size:20px;margin-top:14px;margin-bottom:10px}
+    .card{background:#fff;border-radius:14px;padding:18px;margin:14px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+    .saldo-label{font-size:15px;color:#666;margin-bottom:4px}
+    .saldo-valor{font-size:32px;font-weight:700}
+    .pix-btn{background:#ff2f67;color:#fff;border:0;border-radius:40px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+    .section-title{font-size:22px;font-weight:700;margin-bottom:10px}
+    .section-sub{color:#ff2f67;font-weight:600;font-size:20px;margin-top:6px}
+    .checkin-row{display:flex;gap:12px;margin:14px 0}
+    .checkin-item{width:50px;height:50px;background:#ffecee;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#ff2f67;font-weight:bold}
+    .task-title{font-size:18px;font-weight:700;margin-bottom:4px}
+    .task-sub{color:#ff2f67;font-weight:600}
+    .task-status{background:#eee;color:#777;padding:8px 14px;border-radius:20px;font-size:14px;float:right}
+    .timeline{display:flex;align-items:center;gap:30px;margin-top:14px}
+    .pcoin{width:30px;height:30px;border-radius:50%;background:#ffc83d;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#b07500;font-size:16px}
+    .ptext{text-align:center;font-size:13px;color:#777;margin-top:4px}
+    /* Modal */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:999;}
+    .modal{background:#fff9d9;padding:22px;border-radius:18px;width:85%;text-align:center;font-size:18px;box-shadow:0 4px 20px rgba(0,0,0,0.25)}
+    .modal h2{margin:0;font-size:24px;font-weight:700}
+    .modal .mval{font-size:32px;font-weight:800;margin:12px 0}
+    .modal button{margin-top:18px;background:#ff2f67;color:#fff;border:0;border-radius:40px;padding:12px 24px;font-size:18px;font-weight:600;cursor:pointer;width:70%}
+  </style>
+</head>
+<body>
+
+  <div class="topbar">pronextsmundo.fun</div>
+  <div class="title">TikTok Bônus</div>
+
+  <div class="card">
+    <div class="saldo-label">Seu saldo 🪙</div>
+    <div class="saldo-valor">R$ 4.596,72</div>
+    <button class="pix-btn" style="margin-top:12px">Sacar</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Parabéns!</div>
+    <div class="task-title">Você concluiu todas as tarefas</div>
+    <div class="section-sub">R$ 4.596,72</div>
+  </div>
+
+  <div class="card">
+    <div class="task-title">Entre por 14 dias para ganhar</div>
+    <div class="task-sub">8.414 pontos</div>
+    <div style="color:#999;font-size:14px;margin-top:6px">• 12 de nov – 25 de nov</div>
+    <div style="margin-top:12px;background:#f2f2f2;padding:10px;border-radius:10px;color:#777;font-size:14px">Você concluiu todos os dias de check-in.</div>
+
+    <div class="checkin-row">
+      <div class="checkin-item">✓</div>
+      <div class="checkin-item">✓</div>
+      <div class="checkin-item">✓</div>
+      <div class="checkin-item">✓</div>
+      <div class="checkin-item">✓</div>
+      <div class="checkin-item">✓</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="task-title">Vê anúncios direcionados diariamente para ganhar até <span class="task-sub">2.730 pontos</span></div>
+    <div style="color:#999;font-size:14px;margin-top:6px">• 30/30 anúncios assistidos</div>
+    <div class="task-status">Concluído</div>
+  </div>
+
+  <div class="card">
+    <div class="task-title">Assistir vídeos <span class="task-sub">500 pontos</span></div>
+    <div class="task-status">Concluído</div>
+    <div style="margin-top:14px;background:#ddd;padding:6px 12px;border-radius:20px;display:inline-block;font-size:14px;color:#444">Assista por 10 min</div>
+
+    <div class="timeline">
+      <div>
+        <div class="pcoin">P</div>
+        <div class="ptext">50 pontos</div>
+      </div>
+      <div>
+        <div class="pcoin">P</div>
+        <div class="ptext">100 pontos</div>
+      </div>
+      <div>
+        <div class="pcoin">P</div>
+        <div class="ptext">150 pontos</div>
+      </div>
+      <div>
+        <div class="pcoin">P</div>
+        <div class="ptext">225 pontos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal exemplo -->
+  <div class="modal-bg" id="modalDemo" style="display:none">
+    <div class="modal">
+      <h2>Gol de Prêmios</h2>
+      <p>Parabéns! Como parte de uma campanha exclusiva:</p>
+      <div class="mval">R$ 4.596,72</div>
+      <button onclick="document.getElementById('modalDemo').style.display='none'">Obrigado</button>
+    </div>
+  </div>
+
+  <script>
+    // Simulação: mostrar modal automaticamente
+    setTimeout(()=>{
+      document.getElementById('modalDemo').style.display='flex';
+    },1200);
+  </script>
+
+</body>
+</html>

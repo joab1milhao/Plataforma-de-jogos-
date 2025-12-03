@@ -32,7 +32,6 @@ body {
     gap: 12px;
 }
 
-/* Botão menu */
 .menu-btn {
     font-size: 26px;
     cursor: pointer;
@@ -49,7 +48,6 @@ body {
     text-shadow: 0 0 8px gold;
 }
 
-/* Perfil */
 .topbar-right {
     display: flex;
     align-items: center;
@@ -96,11 +94,10 @@ body {
     text-align: center;
 }
 
-/* BOTÃO COM IMAGEM DO JOGO */
+/* BOTÃO VERTICAL DO JOGO */
 .game-btn {
-    width: 90%;
-    max-width: 260px;
-    height: 150px;
+    width: 200px;        /* ---- VERTICAL ---- */
+    height: 330px;       /* ---- VERTICAL ---- */
     border-radius: 16px;
     border: 2px solid gold;
     overflow: hidden;
@@ -117,7 +114,7 @@ body {
 .game-btn img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* mantém o layout igual ao original */
 }
 
 .game-btn:hover {
@@ -162,10 +159,6 @@ const usuario = JSON.parse(localStorage.getItem("usuario"));
     <!-- JOGO 1 -->
     <button class="game-btn" onclick="window.location.href='game.html'">
         <img src="IMG-20251203-WA0020.jpg" alt="game-btn">
-    </button>
-
-    <button class="game-btn" onclick="alert('Em breve...')">
-        <img src="IMG-20251203-WA0020.jpg" alt="Capa genérica">
     </button>
 
 </div>

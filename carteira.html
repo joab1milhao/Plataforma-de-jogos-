@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carteira</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Card */
+.card {
+    background: rgba(0,0,0,0.7);
+    padding: 25px;
+    max-width: 380px;
+    margin: auto;
+    border-radius: 12px;
+    border: 2px solid gold;
+    box-shadow: 0 0 15px gold;
+}
+
+/* Saldo */
+.saldo-box {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.4);
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 240px;
+    margin: 10px auto 25px auto;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Inputs */
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 6px;
+    border: 1px solid gold;
+    background: #111;
+    color: white;
+    font-size: 16px;
+}
+
+/* Botões */
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover {
+    background: #ffdd33;
+}
+
+button.back {
+    background: #444;
+    border: 1px solid gold;
+    color: gold;
+}
+button.back:hover {
+    background: #666;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+// BLOQUEIO SEM LOGIN
+const rawUser = localStorage.getItem("usuario");
+const rawLogin = localStorage.getItem("logado");
+
+if (!rawUser || rawUser.trim() === "" || rawLogin !== "true") {
+    window.stop();
+    window.location.href = "index.html";
+}
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+</script>
+
+<div class="card">
+
+    <h2>Carteira</h2>
+
+    <!-- Saldo -->
+    <div class="saldo-box" id="saldoTxt"></div>
+
+    <!-- Adicionar saldo -->
+    <h3>Adicionar saldo</h3>
+    <input id="valorAdd" type="number" placeholder="Digite um valor (R$)">
+    <button onclick="adicionarSaldo()">Adicionar</button>
+
+    <br><br>
+    <button class="back" onclick="voltar()">Voltar ao Perfil</button>
+</div>
+
+<script>
+// Exibir saldo
+document.getElementById("saldoTxt").innerText = "Saldo atual: R$ " + usuario.saldo;
+
+// Função para adicionar saldo
+function adicionarSaldo() {
+    const valor = Number(document.getElementById("valorAdd").value);
+
+    if (isNaN(valor) || valor <= 0) {
+        alert("Digite um valor válido!");
+        return;
+    }
+
+    usuario.saldo += valor;
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+
+    document.getElementById("saldoTxt").innerText = "Saldo atual: R$ " + usuario.saldo;
+    document.getElementById("valorAdd").value = "";
+
+    alert("Saldo adicionado com sucesso!");
+}
+
+// Voltar ao perfil
+function voltar() {
+    window.location.href = "perfil.html";
+}
+</script>
+
+</body>
+</html>

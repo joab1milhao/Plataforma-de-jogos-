@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #000000, #121212);
+    color: gold;
+}
+
+/* Botão voltar fixo */
+.btn-voltar {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid gold;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* SETA PERSONALIZADA (SEM IMAGEM) */
+.btn-voltar::before {
+    content: "";
+    width: 15px;
+    height: 15px;
+    border-left: 4px solid gold;
+    border-bottom: 4px solid gold;
+    transform: rotate(45deg);
+    margin-left: 6px;
+}
+
+.btn-voltar:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Botão sair */
+.btn-sair {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    padding: 15px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid gold;
+    border-radius: 10px;
+    color: gold;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.btn-sair:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Container */
+.menu-container {
+    padding: 90px 20px 130px;
+    max-width: 450px;
+    margin: auto;
+}
+
+/* Título */
+.menu-title {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin: 25px 0;
+    text-shadow: 0 0 6px gold;
+}
+
+/* Botões */
+button, a {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid gold;
+    border-radius: 10px;
+    color: gold;
+    text-decoration: none;
+    margin-bottom: 15px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+button:hover, a:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Botão vermelho */
+.btn-red {
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+}
+
+.btn-red:hover {
+    background: rgba(255,80,80,0.15);
+}
+</style>
+</head>
+
+<body>
+
+<script>
+// BLOQUEIO DE ACESSO
+const rawUser = localStorage.getItem("usuario");
+const rawLogin = localStorage.getItem("logado");
+
+if (!rawUser || rawUser.trim() === "" || rawLogin !== "true") {
+    window.location.href = "index.html";
+}
+</script>
+
+<!-- Botão voltar com seta personalizada -->
+<button class="btn-voltar" onclick="voltar()"></button>
+
+<div class="menu-container">
+
+    <div class="menu-title">MENU</div>
+
+    <a href="perfil.html">👤 Perfil</a>
+
+    <button class="btn-red" onclick="apagarConta()">🗑 Excluir conta</button>
+
+</div>
+
+<!-- Botão sair -->
+<button class="btn-sair" onclick="logout()">🚪 Sair</button>
+
+<script>
+function voltar() {
+    window.location.href = "home.html";
+}
+
+function logout() {
+    localStorage.setItem("logado", "false");
+    window.location.href = "index.html";
+}
+
+function apagarConta() {
+    if (confirm("Tem certeza que deseja excluir sua conta?")) {
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("logado");
+        window.location.href = "index.html";
+    }
+}
+</script>
+
+</body>
+</html>

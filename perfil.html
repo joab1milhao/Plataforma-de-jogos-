@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil do Usuário</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Card */
+.card {
+    background: rgba(0,0,0,0.7);
+    padding: 25px;
+    max-width: 380px;
+    margin: auto;
+    border-radius: 12px;
+    border: 2px solid gold;
+    box-shadow: 0 0 15px gold;
+}
+
+/* Avatar */
+.avatar-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #333;
+    border: 3px solid gold;
+    overflow: hidden;
+    margin: 0 auto 10px auto;
+}
+.avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Saldo */
+.saldo-box {
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 220px;
+    margin: 10px auto 10px auto;
+    font-size: 18px;
+}
+
+/* Inputs */
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid gold;
+    background: #111;
+    color: white;
+}
+
+/* Botões */
+button {
+    padding: 10px 15px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover {
+    background: #ffdd33;
+}
+
+button.red {
+    background: red;
+    color: white;
+}
+button.red:hover {
+    background: #ff3333;
+}
+
+button.back {
+    background: #444;
+    border: 1px solid gold;
+    color: gold;
+}
+button.back:hover {
+    background: #666;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+// BLOQUEIO SEM LOGIN
+const rawUser = localStorage.getItem("usuario");
+const rawLogin = localStorage.getItem("logado");
+
+if (!rawUser || rawUser.trim() === "" || rawLogin !== "true") {
+    window.stop();
+    window.location.href = "index.html";
+}
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+</script>
+
+<div class="card">
+
+    <!-- Avatar -->
+    <div class="avatar-box" id="avatarPreview"></div>
+
+    <button onclick="alterarAvatar()">Trocar Avatar</button>
+
+    <!-- Saldo -->
+    <div class="saldo-box" id="saldoTxt"></div>
+
+    <!-- 🔥 Botão "Abrir Carteira" abaixo do saldo -->
+    <button onclick="irCarteira()">Abrir Carteira</button>
+
+    <!-- E-mail -->
+    <p><b>Email:</b> <span id="emailTxt"></span></p>
+
+    <!-- Nome -->
+    <h3>Nome de Exibição</h3>
+    <input id="nomeInput" type="text" placeholder="Seu nome..." />
+    <button onclick="salvarNome()">Salvar Nome</button>
+
+    <hr style="border-color:rgba(255,255,255,0.2); margin:20px 0;">
+
+    <!-- Trocar senha -->
+    <h3>Trocar Senha</h3>
+    <input id="senhaAtual" type="password" placeholder="Senha atual">
+    <input id="senhaNova" type="password" placeholder="Nova senha">
+    <button onclick="trocarSenha()">Salvar Nova Senha</button>
+
+    <br><br>
+    <button class="red" onclick="apagarConta()">Apagar Conta</button>
+
+    <br><br>
+    <button class="back" onclick="voltar()">Voltar à Home</button>
+</div>
+
+<script>
+// Preencher campos
+document.getElementById("nomeInput").value = usuario.nome;
+document.getElementById("saldoTxt").innerText = "Saldo: R$ " + usuario.saldo;
+document.getElementById("emailTxt").innerText = usuario.email;
+
+// Avatar
+function atualizarAvatar() {
+    document.getElementById("avatarPreview").innerHTML =
+        `<img src="${usuario.avatar || 'https://i.imgur.com/1XKpFYT.png'}">`;
+}
+atualizarAvatar();
+
+// Trocar avatar
+function alterarAvatar() {
+    let input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = function(e) {
+        let file = e.target.files[0];
+        if (!file) return;
+
+        let reader = new FileReader();
+        reader.onload = function(event) {
+            usuario.avatar = event.target.result;
+            localStorage.setItem("usuario", JSON.stringify(usuario));
+            atualizarAvatar();
+            alert("Avatar atualizado!");
+        };
+        reader.readAsDataURL(file);
+    };
+
+    input.click();
+}
+
+// Salvar nome
+function salvarNome() {
+    const nome = document.getElementById("nomeInput").value.trim();
+
+    if (nome.length < 2) {
+        alert("Nome muito curto.");
+        return;
+    }
+    usuario.nome = nome;
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    alert("Nome atualizado!");
+}
+
+// TROCAR SENHA
+function trocarSenha() {
+    const atual = document.getElementById("senhaAtual").value;
+    const nova = document.getElementById("senhaNova").value;
+
+    if (atual !== usuario.senha) {
+        alert("Senha atual INCORRETA!");
+        return;
+    }
+
+    if (nova.length < 4) {
+        alert("A nova senha deve ter pelo menos 4 caracteres.");
+        return;
+    }
+
+    usuario.senha = nova;
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+
+    document.getElementById("senhaAtual").value = "";
+    document.getElementById("senhaNova").value = "";
+
+    alert("Senha alterada com sucesso!");
+}
+
+// Ir para carteira.html
+function irCarteira() {
+    window.location.href = "carteira.html";
+}
+
+// Apagar conta
+function apagarConta() {
+    let confirmar = confirm("Tem certeza que deseja APAGAR sua conta? Esta ação é irreversível.");
+
+    if (confirmar) {
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("logado");
+        alert("Conta apagada com sucesso!");
+        window.location.href = "index.html";
+    }
+}
+
+// voltar à home
+function voltar() {
+    window.location.href = "home.html";
+}
+</script>
+
+</body>
+</html>

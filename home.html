@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: white;
+}
+
+/* Barra superior */
+.topbar {
+    width: 100%;
+    min-height: 70px;
+    background: rgba(0,0,0,0.9);
+    border-bottom: 2px solid gold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 15px;
+    box-sizing: border-box;
+}
+
+.top-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Botão menu */
+.menu-btn {
+    font-size: 26px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid gold;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 8px gold;
+}
+
+/* Perfil */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.saldo {
+    padding: 6px 10px;
+    background: #222;
+    border: 1px solid gold;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.username {
+    font-size: 15px;
+    font-weight: bold;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid gold;
+    overflow: hidden;
+}
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Conteúdo */
+.content {
+    padding: 22px;
+    text-align: center;
+}
+
+/* BOTÃO COM IMAGEM DO JOGO */
+.game-btn {
+    width: 90%;
+    max-width: 260px;
+    height: 150px;
+    border-radius: 16px;
+    border: 2px solid gold;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+    margin: 14px auto;
+    padding: 0;
+    transition: .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 12px gold;
+}
+</style>
+</head>
+
+<body>
+
+<script>
+const rawUser = localStorage.getItem("usuario");
+const rawLogin = localStorage.getItem("logado");
+
+if (!rawUser || rawUser.trim() === "" || rawLogin !== "true") {
+    window.location.href = "index.html";
+}
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+</script>
+
+<!-- TOPO -->
+<div class="topbar">
+
+    <div class="top-left">
+        <div class="menu-btn" onclick="window.location.href='menu.html'">☰</div>
+        <span class="title">M13</span>
+    </div>
+
+    <div class="topbar-right">
+        <div class="saldo" id="saldoUsuario"></div>
+        <div class="username" id="nomeUsuario"></div>
+        <div class="avatar" id="avatarBox"></div>
+    </div>
+
+</div>
+
+<!-- CONTEÚDO -->
+<div class="content">
+
+    <!-- JOGO 1 – capa embutida -->
+    <button class="game-btn" onclick="window.location.href='game.html'">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA..." alt="Capa do jogo">
+    </button>
+
+    <button class="game-btn" onclick="alert('Em breve...')">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgA..." alt="Capa genérica">
+    </button>
+
+</div>
+
+<script>
+document.getElementById("avatarBox").innerHTML =
+    `<img src="${usuario.avatar || 'https://i.imgur.com/1XKpFYT.png'}">`;
+
+document.getElementById("nomeUsuario").innerText = usuario.nome;
+document.getElementById("saldoUsuario").innerText = "R$ " + usuario.saldo;
+</script>
+
+</body>
+</html>

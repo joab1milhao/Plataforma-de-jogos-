@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>M13 — Login</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #150016, #3a0144);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow-x: hidden;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* Luz giratória */
+    .luz {
+        position: fixed;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background: radial-gradient(circle, rgba(255,215,0,0.13), transparent 70%);
+        animation: girar 18s linear infinite;
+        opacity: .35;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    @keyframes girar {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .box {
+        position: relative;
+        width: 100%;
+        max-width: 350px;
+        background: rgba(0,0,0,0.80);
+        border: 2px solid gold;
+        padding: 28px 24px;
+        border-radius: 14px;
+        text-align: center;
+        box-shadow: 0 0 18px rgba(255,215,0,0.20);
+        z-index: 2;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        margin: 0 0 22px 0;
+        color: gold;
+        text-shadow: 0 0 10px gold;
+        font-size: 26px;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        font-size: 17px;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        background: gold;
+        color: black;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: .2s;
+        font-size: 17px;
+    }
+
+    button:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 10px gold;
+    }
+
+    p {
+        margin-top: 20px;
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+
+    a {
+        color: gold;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 380px) {
+        h1 { font-size: 22px; }
+        input, button { font-size: 15px; padding: 12px; }
+        .box { padding: 20px 18px; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="luz"></div>
+
+<div class="box">
+    <h1>🎰 M13</h1>
+
+    <input id="email" type="email" placeholder="Seu e-mail" autocomplete="off"/>
+    <input id="senha" type="password" placeholder="Sua senha"/>
+
+    <button onclick="login()">Entrar</button>
+
+    <p>
+        Ainda não tem conta?<br>
+        <a href="cadastro.html">Criar cadastro</a>
+    </p>
+</div>
+
+<script>
+function login() {
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+
+    if (!email || !senha) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("usuario"));
+
+    if (!user) {
+        alert("Nenhum usuário cadastrado.");
+        return;
+    }
+
+    if (email === user.email && senha === user.senha) {
+        localStorage.setItem("logado", "true");
+        window.location.href = "home.html";
+    } else {
+        alert("E-mail ou senha incorretos.");
+    }
+}
+</script>
+
+</body>
+</html>

@@ -120,7 +120,6 @@ body {
     object-fit: cover;
 }
 
-/* Efeito hover */
 .game-btn:hover {
     transform: scale(1.03);
     box-shadow: 0 0 12px gold;
@@ -131,7 +130,6 @@ body {
 <body>
 
 <script>
-// BLOQUEIO DE ACESSO
 const rawUser = localStorage.getItem("usuario");
 const rawLogin = localStorage.getItem("logado");
 
@@ -161,19 +159,18 @@ const usuario = JSON.parse(localStorage.getItem("usuario"));
 <!-- CONTEÚDO -->
 <div class="content">
 
-    <!-- 📌 JOGO 1 – com capa imagem1.png -->
+    <!-- JOGO 1 -->
     <button class="game-btn" onclick="window.location.href='game.html'">
-        <img src="imagem1.png" alt="Capa do jogo">
+        <img src="IMG-20251203-WA0020.jpg" alt="Capa do jogo">
     </button>
 
     <button class="game-btn" onclick="alert('Em breve...')">
-        <img src="imagem1.png" alt="Capa genérica">
+        <img src="IMG-20251203-WA0020.jpg" alt="Capa genérica">
     </button>
 
 </div>
 
 <script>
-// Preencher dados na barra superior
 document.getElementById("avatarBox").innerHTML =
     `<img src="${usuario.avatar || 'https://i.imgur.com/1XKpFYT.png'}">`;
 
